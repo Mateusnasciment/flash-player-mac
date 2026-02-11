@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flash Player for macOS (2026)</title>
+
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #121824;
+      --accent: #00e5ff;
+      --text: #e6edf3;
+      --muted: #9aa4b2;
+      --danger: #ff5c5c;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at top, #0e1624, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 920px;
+      width: 100%;
+      background: linear-gradient(180deg, #121a2a, var(--card));
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    header h1 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 760px;
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lang-switch button {
+      background: transparent;
+      border: 1px solid #2a3448;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-switch button:hover,
+    .lang-switch button.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.3);
+    }
+
+    section {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: #0f1624;
+      border: 1px solid #1f2a40;
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .download {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 36px;
+      text-align: center;
+    }
+
+    .download a {
+      background: linear-gradient(135deg, var(--accent), #4facfe);
+      color: #001018;
+      padding: 16px 26px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 14px 40px rgba(0, 229, 255, 0.35);
+    }
+
+    .download a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 55px rgba(0, 229, 255, 0.5);
+    }
+
+    .warning {
+      border-left: 4px solid var(--danger);
+      background: rgba(255, 92, 92, 0.08);
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-top: 28px;
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #7f8ba3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="title"></h1>
+      <p id="subtitle"></p>
+
+      <div class="lang-switch">
+        <button onclick="setLang('pt')" id="btn-pt">Português</button>
+        <button onclick="setLang('en')" id="btn-en">English</button>
+        <button onclick="setLang('es')" id="btn-es">Español</button>
+      </div>
+    </header>
+
+    <section>
+      <div class="card">
+        <h2 id="section1-title"></h2>
+        <p id="section1-text"></p>
+      </div>
+
+      <div class="card">
+        <h2 id="section2-title"></h2>
+        <ul id="section2-list"></ul>
+      </div>
+
+      <div class="warning">
+        <strong id="warning-title"></strong>
+        <p id="warning-text"></p>
+      </div>
+    </section>
+
+    <div class="download">
+      <a href="macos-flash.zip" download id="download-btn"></a>
+      <small id="download-note"></small>
+    </div>
+
+    <footer>
+      © 2026 — Personal Flash Configuration for macOS
+    </footer>
+  </div>
+
+  <script>
+    const content = {
+      pt: {
+        title: "Flash Player no macOS (Configuração 2026)",
+        subtitle:
+          "Esta é uma configuração pessoal desenvolvida por mim para executar aplicações legadas em Adobe Flash no macOS, utilizando um ambiente controlado com Chromium.",
+        s1t: "Sobre esta configuração",
+        s1p:
+          "Este pacote foi criado especificamente para aplicações Flash que não funcionam corretamente em emuladores modernos como Ruffle ou em extensões Flash antigas. O foco é compatibilidade máxima em um ambiente isolado.",
+        s2t: "Características técnicas",
+        s2l: [
+          "Ambiente baseado em Chromium adaptado para Flash",
+          "Compatível com macOS moderno (2026)",
+          "Uso voltado a aplicações corporativas, educacionais e sistemas legados",
+          "Não depende de plugins Flash obsoletos do navegador principal"
+        ],
+        wt: "Aviso importante",
+        wp:
+          "Esta configuração é de uso pessoal e experimental. O uso de tecnologias descontinuadas como Adobe Flash é de inteira responsabilidade do usuário.",
+        db: "Baixar macos-flash.zip",
+        dn:
+          "Recomendado apenas para usuários que sabem exatamente o que estão executando."
+      },
+
+      en: {
+        title: "Flash Player on macOS (2026 Configuration)",
+        subtitle:
+          "This is a personal configuration created by me to run legacy Adobe Flash applications on macOS using a controlled Chromium-based environment.",
+        s1t: "About this setup",
+        s1p:
+          "This package was designed specifically for Flash applications that do not work properly with modern emulators like Ruffle or outdated Flash extensions. The focus is maximum compatibility in an isolated environment.",
+        s2t: "Technical highlights",
+        s2l: [
+          "Chromium-based environment adapted for Flash",
+          "Compatible with modern macOS (2026)",
+          "Intended for corporate, educational, and legacy systems",
+          "Does not rely on obsolete Flash plugins in the main browser"
+        ],
+        wt: "Important notice",
+        wp:
+          "This configuration is personal and experimental. The use of discontinued technologies such as Adobe Flash is entirely the user's responsibility.",
+        db: "Download macos-flash.zip",
+        dn:
+          "Recommended only for users who understand exactly what they are running."
+      },
+
+      es: {
+        title: "Flash Player en macOS (Configuración 2026)",
+        subtitle:
+          "Esta es una configuración personal creada por mí para ejecutar aplicaciones heredadas de Adobe Flash en macOS utilizando un entorno controlado basado en Chromium.",
+        s1t: "Sobre esta configuración",
+        s1p:
+          "Este paquete fue diseñado específicamente para aplicaciones Flash que no funcionan correctamente con emuladores modernos como Ruffle o extensiones Flash antiguas. El enfoque es la máxima compatibilidad en un entorno aislado.",
+        s2t: "Características técnicas",
+        s2l: [
+          "Entorno basado en Chromium adaptado para Flash",
+          "Compatible con macOS moderno (2026)",
+          "Orientado a aplicaciones corporativas, educativas y sistemas heredados",
+          "No depende de plugins Flash obsoletos del navegador principal"
+        ],
+        wt: "Aviso importante",
+        wp:
+          "Esta configuración es personal y experimental. El uso de tecnologías descontinuadas como Adobe Flash es responsabilidad total del usuario.",
+        db: "Descargar macos-flash.zip",
+        dn:
+          "Recomendado solo para usuarios que saben exactamente lo que están ejecutando."
+      }
+    };
+
+    function setLang(lang) {
+      const c = content[lang];
+      document.documentElement.lang = lang;
+      document.getElementById("title").innerText = c.title;
+      document.getElementById("subtitle").innerText = c.subtitle;
+      document.getElementById("section1-title").innerText = c.s1t;
+      document.getElementById("section1-text").innerText = c.s1p;
+      document.getElementById("section2-title").innerText = c.s2t;
+
+      const ul = document.getElementById("section2-list");
+      ul.innerHTML = "";
+      c.s2l.forEach(item => {
+        const li = document.createElement("li");
+        li.innerText = item;
+        ul.appendChild(li);
+      });
+
+      document.getElementById("warning-title").innerText = c.wt;
+      document.getElementById("warning-text").innerText = c.wp;
+      document.getElementById("download-btn").innerText = c.db;
+      document.getElementById("download-note").innerText = c.dn;
+
+      document.querySelectorAll(".lang-switch button").forEach(b => b.classList.remove("active"));
+      document.getElementById("btn-" + lang).classList.add("active");
+    }
+
+    const browserLang = navigator.language.slice(0, 2);
+    setLang(content[browserLang] ? browserLang : "pt");
+  </script>
+</body>
+</html>
